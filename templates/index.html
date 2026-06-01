@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dự báo Béo phì</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    </head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Ứng dụng Dự báo Béo phì</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="results text-center mt-4">
+            {% if prediction not in [-1, -2] %}
+                {% set result_text, result_class = ('Không xác định', 'secondary') %}
+                {% if prediction == 'Underweight' %}
+                    {% set result_text, result_class = ('Thiếu cân', 'warning') %}
+                {% elif prediction == 'Normal' %}
+                    {% set result_text, result_class = ('Cân nặng bình thường', 'success') %}
+                {% elif prediction == 'Overweight' %}
+                    {% set result_text, result_class = ('Thừa cân', 'info') %}
+                {% elif prediction == 'Obesity' %}
+                    {% set result_text, result_class = ('Béo phì', 'danger') %}
+                {% endif %}
+                <h2 class="text-{{ result_class }}">Kết quả: {{ result_text }}</h2>
+                <hr>
+                <a href="/" class="btn btn-secondary mb-3">Nhập lại thông tin</a>
+            {% elif prediction == -2 %}
+                <h2 class="text-danger">Lỗi! Vui lòng kiểm tra lại thông tin.</h2>
+                <a href="/" class="btn btn-secondary mb-3">Nhập lại</a>
+            {% endif %}
+        </div>
+
+        {% if prediction == -1 or prediction == -2 %}
+            <div class="login mt-4 p-4 bg-light rounded shadow-sm">
+                <h2 class="text-center mb-4">Nhập thông tin</h2>
+                <form action="{{ url_for('predict') }}" method="post">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="sex" class="form-label">Giới tính</label>
+                                <select id="sex" name="Sex" class="form-select" required>
+                                    <option value="1">Nam</option>
+                                    <option value="2">Nữ</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="age" class="form-label">Tuổi</label>
+                                <input type="number" id="age" name="Age" class="form-control" placeholder="Ví dụ: 25" min="1" max="120" required>
+                            </div>                            
+                            <div class="mb-3">
+                                <label for="height" class="form-label">Chiều cao (cm)</label>
+                                <input type="number" step="1" id="height" name="Height" class="form-control" placeholder="Ví dụ: 170" min="50" max="250" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="familyHistory" class="form-label">Tiền sử gia đình thừa cân/béo phì</label>
+                                <select id="familyHistory" name="Overweight_Obese_Family" class="form-select" required>
+                                    <option value="1">Có</option>
+                                    <option value="2">Không</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="fastFood" class="form-label">Hay ăn thức ăn nhanh (FAVC)</label>
+                                <select id="fastFood" name="Consumption_of_Fast_Food" class="form-select" required>
+                                    <option value="1">Có</option>
+                                    <option value="2">Không</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="vegetables" class="form-label">Tần suất ăn rau (FCVC)</label>
+                                <select id="vegetables" name="Frequency_of_Consuming_Vegetables" class="form-select" required>
+                                    <option value="1">Ít khi (Rarely)</option>
+                                    <option value="2">Thỉnh thoảng (Sometimes)</option>
+                                    <option value="3">Luôn luôn (Always)</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="meals" class="form-label">Số bữa ăn chính mỗi ngày (NCP)</label>
+                                <select id="meals" name="Number_of_Main_Meals_Daily" class="form-select" required>
+                                    <option value="1">1-2 bữa</option>
+                                    <option value="2">3 bữa</option>
+                                    <option value="3">Trên 3 bữa</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="smoking" class="form-label">Hút thuốc (SMOKE)</label>
+                                <select id="smoking" name="Smoking" class="form-select" required>
+                                    <option value="1">Có</option>
+                                    <option value="2">Không</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="liquidIntake" class="form-label">Lượng nước uống mỗi ngày (CH2O)</label>
+                                <select id="liquidIntake" name="Liquid_Intake_Daily" class="form-select" required>
+                                    <option value="1">< 1 lít</option>
+                                    <option value="2">1-2 lít</option>
+                                    <option value="3">> 2 lít</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="calorieIntake" class="form-label">Theo dõi lượng calo tiêu thụ (SCC)</label>
+                                <select id="calorieIntake" name="Calculation_of_Calorie_Intake" class="form-select" required>
+                                    <option value="1">Có</option>
+                                    <option value="2">Không</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exercise" class="form-label">Tần suất hoạt động thể chất (FAF)</label>
+                                <select id="exercise" name="Physical_Excercise" class="form-select" required>
+                                    <option value="1">Không (No physical activity)</option>
+                                    <option value="2">1-2 ngày/tuần</option>
+                                    <option value="3">3-4 ngày/tuần</option>
+                                    <option value="4">5-6 ngày/tuần</option>
+                                    <option value="5">6+ ngày/tuần</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="techUse" class="form-label">Thời gian sử dụng thiết bị công nghệ (TUE)</label>
+                                <select id="techUse" name="Schedule_Dedicated_to_Technology" class="form-select" required>
+                                    <option value="1">0-2 giờ</option>
+                                    <option value="2">3-5 giờ</option>
+                                    <option value="3">> 5 giờ</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="transport" class="form-label">Loại phương tiện đi lại chính (CALC)</label>
+                                <select id="transport" name="Type_of_Transportation_Used" class="form-select" required>
+                                    <option value="1">Ô tô (Automobile)</option>
+                                    <option value="2">Xe máy (Motorbike)</option>
+                                    <option value="3">Xe đạp (Bike)</option>
+                                    <option value="4">Phương tiện công cộng (Public Transport)</option>
+                                    <option value="5">Đi bộ (Walking)</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="snacks" class="form-label">Ăn vặt giữa các bữa ăn (CAEC)</label>
+                                <select id="snacks" name="Food_Intake_Between_Meals" class="form-select" required>
+                                    <option value="1">Ít khi (Rarely)</option>
+                                    <option value="2">Thỉnh thoảng (Sometimes)</option>
+                                    <option value="3">Thường xuyên (Usually)</option>
+                                    <option value="4">Luôn luôn (Always)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">Dự báo</button>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

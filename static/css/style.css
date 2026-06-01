@@ -1,0 +1,127 @@
+/* General Styles */
+body {
+    font-family: 'Open Sans Condensed', sans-serif;
+    /* Bạn có thể cần import font này nếu chưa có */
+    background-color: #f8f9fa;
+    color: #333;
+    margin: 0;
+    padding: 20px 0;
+    /* Thêm padding trên dưới */
+}
+
+/* Header */
+h1,
+h2 {
+    /* font-family: 'Pacifico', cursive; */
+    /* Bỏ comment nếu muốn dùng font này và đã import */
+    color: #444;
+    margin-bottom: 1rem;
+    /* Thêm khoảng cách dưới */
+}
+
+h1 span {
+    font-size: 1.5em;
+}
+
+/* Container */
+.container {
+    max-width: 800px;
+    /* Giữ 800px từ file CSS gốc của bạn */
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Results Section */
+.results h2 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 1.75rem;
+}
+
+/* Alert message styling */
+.alert {
+    margin-top: 15px;
+    /* Thêm từ style nội tuyến cũ */
+}
+
+/* Form Styles */
+.login {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    /* Giữ 10px từ file CSS gốc của bạn */
+    border: 1px solid #dee2e6;
+    /* box-shadow đã có ở .container */
+}
+
+.form-label {
+    font-size: 1rem;
+    font-weight: 600;
+    /* Giữ 600 từ file CSS gốc của bạn */
+    margin-bottom: 0.5rem;
+}
+
+.form-control,
+.form-select {
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Button */
+.btn-primary {
+    color: white;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    padding: 12px 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    /* Sử dụng màu mặc định của Bootstrap hoặc tùy chỉnh thêm background-color/border-color nếu muốn */
+}
+
+/* Input Fields */
+input[type="number"] {
+    /* Specific styles if needed */
+}
+
+input::placeholder {
+    font-style: italic;
+    color: #999;
+}
+
+/* Small Screen Adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+        /* Có thể giảm max-width nếu cần */
+        /* max-width: 95%; */
+    }
+
+    .login {
+        padding: 20px;
+    }
+
+    .btn-lg {
+        padding: 10px 20px;
+        font-size: 1.1rem;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    .results h2 {
+        font-size: 1.5rem;
+    }
+}
